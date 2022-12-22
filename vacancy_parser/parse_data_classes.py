@@ -1,4 +1,3 @@
-from connector import Connector
 import re
 
 
@@ -8,27 +7,39 @@ class Vacancy:
     def __init__(self, pattern: dict):
         self.vacancy_name = pattern.get('name')
         self.link = pattern.get('link')
-        self.description = pattern.get('description'), None
-        self.salary = pattern.get('salary'), None
+        self.description = pattern.get('description') or None
+        self.salary = pattern.get('salary') or {'from': 0, 'to': 0}
+
+    def __gt__(self, other):
+        result = self.salary.get('from', 0) > other.salary.get('from', 0)
+        return result
+
+    def __lt__(self, other):
+        result = self.salary.get('from', 0) < other.salary.get('from', 0)
+        return result
+
+    def __eq__(self, other):
+        result = self.salary.get('from', 0) == other.salary.get('from', 0)
+        return result
 
     def parse_salary(self):
-        if self.salary[0]:
+        if self.salary:
             try:
-                return f"{self.salary[0]['from']} - {self.salary[0]['to']} ({self.salary[0]['currency']})"
+                return f"{self.salary['from']} - {self.salary['to']} ({self.salary['currency']})"
             except KeyError:
-                return f"{self.salary[0]['from']} - {self.salary[0]['to']}"
+                return f"{self.salary['from']} - {self.salary['to']}"
 
     def parse_description(self):
-        if self.description[0]:
+        if self.description:
             try:
-                return f"{re.sub(r'<.*?>|&.*?;', ' ', self.description[0]['requirement'])}\
-                \n{re.sub(r'<.*?>|&.*?;', ' ', self.description[0]['responsibility'])}"
+                return f"{re.sub(r'<.*?>|&.*?;', ' ', self.description['requirement'])}\
+                \n{re.sub(r'<.*?>|&.*?;', ' ', self.description['responsibility'])}"
             except:
-                return re.sub(r'<.*?>|&.*?;|\\n\\xa0', '', str(self.description[0])).replace(';', '\n')
+                return re.sub(r'<.*?>|&.*?;|\\n\\xa0', '', str(self.description)).replace(';', '\n')
 
     def __repr__(self):
-        return f'{"*" * 30}\n{self.vacancy_name}\n{self.link}\n{"-" * 30}\
-                \n{self.parse_description()}\n{"-" * 30}\nЗП: {self.parse_salary()}'
+        return f'\n{self.vacancy_name}\n{self.link}\n{"-" * 30}\
+                \n{self.parse_description()}\n{"-" * 30}\nЗП: {self.parse_salary()}\n{"#" * 50}\n'
 
 
 class CountMixin:
@@ -36,15 +47,11 @@ class CountMixin:
 
     @property
     def get_count_of_vacancy(self):
-        """
-        Вернуть количество вакансий от текущего сервиса.
-        Получать количество необходимо динамически из файла.
-        """
         return CountMixin.counter
 
     @get_count_of_vacancy.setter
     def get_count_of_vacancy(self, value):
-        CountMixin.counter += value
+        CountMixin.counter = value
 
 
 class HHVacancy(Vacancy, CountMixin):  # add counter mixin
@@ -52,43 +59,26 @@ class HHVacancy(Vacancy, CountMixin):  # add counter mixin
 
     def __init__(self, data):
         self.get_count_of_vacancy += 1
-        print(self.get_count_of_vacancy)
-        self.file = data
         args = {
-            'name': self.file.get('name'),
-            'link': self.file.get('alternate_url'),
-            'description': self.file.get('snippet'),
-            'salary': self.file.get('salary')
+            'name': data.get('name'),
+            'link': data.get('alternate_url'),
+            'description': data.get('snippet'),
+            'salary': data.get('salary')
         }
         super().__init__(args)
 
 
-
-class SJVacancy(Vacancy, CountMixin):
+class SJVacancy(Vacancy, CountMixin):  # add counter mixin
     """ SuperJob Vacancy """
 
     def __init__(self, data):
-        self.file = data
+        self.get_count_of_vacancy += 1
         args = {
-            'name': self.file.get('profession'),
-            'link': self.file.get('link'),
-            'description': self.file.get('vacancyRichText'),
+            'name': data.get('profession'),
+            'link': data.get('link'),
+            'description': data.get('vacancyRichText'),
             'salary':
-                {'from': self.file.get('payment_from'),
-                 'to': self.file.get('payment_to')}
+                {'from': data.get('payment_from'),
+                 'to': data.get('payment_to')}
         }
         super().__init__(args)
-
-
-con_obj = Connector('../data/hh_responses.json')
-file = con_obj.eject()
-for item in file:
-    hh = HHVacancy(item)
-
-    print(hh)
-
-# con_obj = Connector('../data/sj_responses.json')
-# file = con_obj.eject()
-# for item in file:
-#     hh = SJVacancy(item)
-#     print(hh)

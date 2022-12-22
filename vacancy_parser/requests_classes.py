@@ -17,7 +17,10 @@ class Engine(ABC):
 class HH(Engine):
     def get_request(self, text: str) -> None:
         hh_responses = []
+
         for page in range(10):
+            print('Выполняется запрос...')
+
             url = f'https://api.hh.ru/vacancies?{page=}&per_page=100&{text=}'
             response = requests.request("GET", url)
             if response.status_code > 301:
@@ -38,6 +41,8 @@ class SuperJob(Engine):
             'Host': 'api.superjob.ru'}
 
         for page in range(10):
+            print('Выполняется запрос...')
+
             url = f'https://api.superjob.ru/2.0/vacancies/?{keyword=}&count=100'
             response = requests.request("GET", url, headers=headers)
             if response.status_code > 301:

@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 import requests
-from connector import Connector
+from vacancy_parser.connector import Connector
 
 
 class Engine(ABC):
@@ -14,6 +14,8 @@ class Engine(ABC):
 
 
 class HH(Engine):
+    """Записывает полученные от API данные в json"""
+
     def get_request(self, text: str) -> None:
         hh_responses = []
 
@@ -27,11 +29,13 @@ class HH(Engine):
             else:
                 hh_responses.extend(response.json().get('items'))
 
-        con_obj = HH.get_connector('../data/hh_responses.json')
+        con_obj = HH.get_connector('data/hh_responses.json')
         con_obj.insert(hh_responses)
 
 
 class SuperJob(Engine):
+    """Записывает полученные от API данные в json"""
+
     def get_request(self, keyword: str) -> None:
         sj_responses = []
         headers = {
@@ -41,7 +45,6 @@ class SuperJob(Engine):
 
         for page in range(1, 6):
             print('Выполняется запрос...')
-            print(page)
             url = f'https://api.superjob.ru/2.0/vacancies/?{page=}&count=100&{keyword=}'
             response = requests.request("GET", url, headers=headers)
             if response.status_code > 301:
@@ -49,5 +52,5 @@ class SuperJob(Engine):
             else:
                 sj_responses.extend(response.json().get('objects'))
 
-        con_obj = SuperJob.get_connector('../data/sj_responses.json')
+        con_obj = SuperJob.get_connector('data/sj_responses.json')
         con_obj.insert(sj_responses)

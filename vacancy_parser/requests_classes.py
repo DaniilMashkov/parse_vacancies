@@ -10,14 +10,16 @@ class Engine(ABC):
 
     @staticmethod
     def get_connector(file_name: str) -> object:
-        """ Возвращает экземпляр класса Connector """
         return Connector(file_name)
 
 
 class HH(Engine):
     def get_request(self, text: str) -> None:
         hh_responses = []
+
         for page in range(10):
+            print('Выполняется запрос...')
+
             url = f'https://api.hh.ru/vacancies?{page=}&per_page=100&{text=}'
             response = requests.request("GET", url)
             if response.status_code > 301:
@@ -37,8 +39,10 @@ class SuperJob(Engine):
                 'v3.r.120558577.03d5d61129ce8b416a420a9c0c3a8d89005f9067.f69f0541855923e9f201e077ed4f7dc57edd7e5c',
             'Host': 'api.superjob.ru'}
 
-        for page in range(10):
-            url = f'https://api.superjob.ru/2.0/vacancies/?{keyword=}&count=100'
+        for page in range(1, 6):
+            print('Выполняется запрос...')
+            print(page)
+            url = f'https://api.superjob.ru/2.0/vacancies/?{page=}&count=100&{keyword=}'
             response = requests.request("GET", url, headers=headers)
             if response.status_code > 301:
                 break

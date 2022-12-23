@@ -2,6 +2,7 @@ import json
 
 
 class Connector:
+    """Запись и чтение json"""
 
     def __init__(self, filename: str):
         self.__data_file = filename

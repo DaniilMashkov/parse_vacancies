@@ -1,7 +1,7 @@
-from utils import get_remote_data, get_local_data
+from vacancy_parser.utils import get_remote_data, get_local_data
 
 
-def main():
+def main() -> None:
     while True:
         sel_category = input('Выберете действие:'
                              '\n1.Запросить данные с ресурса\n2.Получить локальные данные\

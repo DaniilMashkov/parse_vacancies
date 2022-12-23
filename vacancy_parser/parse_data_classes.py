@@ -2,6 +2,8 @@ import re
 
 
 class Vacancy:
+    """Задаёт каждому наследуемому экземпляру класса единый формат"""
+
     __slots__ = ('vacancy_name', 'link', 'description', 'salary')
 
     def __init__(self, pattern: dict):
@@ -12,6 +14,8 @@ class Vacancy:
             else {'from': 0, 'to': 0, 'currency': 'RUR'}
 
     def get_parsed_dict(self) -> dict:
+        """Формат словаря для записи в json"""
+
         return {
             'name': self.vacancy_name,
             'link': self.link,
@@ -27,12 +31,6 @@ class Vacancy:
 
     def __eq__(self, other: int) -> bool:
         return (self.salary.get('from') or 0) == (other or 0)
-
-    def __ge__(self, other: int) -> bool:
-        return (self.salary.get('from') or 0) >= (other or 0)
-
-    def __le__(self, other: int) -> bool:
-        return (self.salary.get('from') or 0) <= (other or 0)
 
     def parse_salary(self):
         if self.salary:

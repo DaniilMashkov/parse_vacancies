@@ -2,31 +2,21 @@ from connector import Connector
 from parse_data_classes import HHVacancy, SJVacancy
 
 
-class Collect:
+class LocalDataService:
 
     def __init__(self, file_path: str) -> None:
         con_obj = Connector(file_path)
         self.data = con_obj.eject()
         self.lst = []
 
-    def collect(self, service: HHVacancy | SJVacancy):
+    def collect(self, service: type) -> list[HHVacancy | SJVacancy]:
         for item in self.data:
-            # print(item)
-            # exit()
             inst = service(item)
             self.lst.append(inst)
         return self.lst
 
-    def sort_data(self, flag=False):
+    def sort_data(self, flag=False) -> None:
         self.lst.sort(reverse=flag)
 
-
-
-
-s = Collect('../data/hh_responses.json')
-# d = Collect('../data/sj_responses.json')
-
-s.collect(HHVacancy)
-
-print(s.sort_data())
-print(s.lst)
+    def filter_data(self, min_salary: int) -> list:
+        return list(filter(lambda x: (x.salary.get('from') or 0) >= min_salary, self.lst))

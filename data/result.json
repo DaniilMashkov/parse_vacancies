@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Python developer",
+    "link": "https://hh.ru/vacancy/77924128",
+    "description": "Road24ni takomillashtirish va uni \"horizontal scaling\" arhitekturasiga olib kelish rejalashtiriligan. Shu kabi ish qilgan dasturchi qidirilmoqda. ",
+    "salary": "8000000 - 18000000 (UZS)"
+  },
+  {
+    "name": "Программист Python/Devops Engineer",
+    "link": "https://hh.ru/vacancy/77381589",
+    "description": "Написание читаемого, тестируемого и эффективного кода. Разработка backend на Python Django/FastAPI. Разработка микросервисных решений. Интеграции с различными внешними системами.",
+    "salary": "8000000 - 15000000 (UZS)"
+  },
+  {
+    "name": "Преподаватель по программированию",
+    "link": "https://hh.ru/vacancy/78355009",
+    "description": "Проводить уроки ученикам частной школы/учебного центра по Веб-Программированию/Python (на выбор).",
+    "salary": "6000000 - 10000000 (UZS)"
+  }
+]

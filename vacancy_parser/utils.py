@@ -30,15 +30,20 @@ def get_local_data() -> None:
     connector_instance = Connector('data/result.json')
 
     if sel_service == '1':
-        vacancies = hh_instance.collect(HHVacancy)
-        print(f'\nНайдено {vacancies[0].get_count_of_vacancy} вакансий\n')
+        if vacancies := hh_instance.collect(HHVacancy):
+            print(f'\nНайдено {vacancies[0].get_count_of_vacancy} вакансий\n')
+        else:
+            print('Отсутстуют данные с сервера')
 
         sort(hh_instance)
         get_result(connector_instance, hh_instance.lst)
 
     if sel_service == '2':
-        vacancies = sj_instance.collect(SJVacancy)
-        print(f'\nНайдено {vacancies[0].get_count_of_vacancy} вакансий\n')
+
+        if vacancies := sj_instance.collect(SJVacancy):
+            print(f'\nНайдено {vacancies[0].get_count_of_vacancy} вакансий\n')
+        else:
+            print('Отсутстуют данные с сервера')
 
         sort(sj_instance)
         get_result(connector_instance, sj_instance.lst)
@@ -47,7 +52,7 @@ def get_local_data() -> None:
 def sort(instance) -> None:
     """Интерфейс для установки параметров сортировки экземпляров класса"""
 
-    sort_input = input('1.Сортировать по убыванию\n2.Сортировать по возрастанию\n3.Ввести нижний порог ЗП\n')
+    sort_input = input('1.Сортировать по зп по убыванию\n2.Сортировать по зп по возрастанию\n3.Ввести нижний порог ЗП\n')
     if sort_input == '1':
         instance.sort_data()
     if sort_input == '2':
